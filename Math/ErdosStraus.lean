@@ -320,4 +320,97 @@ theorem conjecture_iff_residual840 :
     exact (residue840_table r).mp ⟨hmod24.trans h24, hmod5 ▸ h5nz, hmod7 ▸ h7nz,
       hmod20 ▸ h13, hmod20 ▸ h17, hmod7 ▸ h3, hmod7 ▸ h5, hmod7 ▸ h6⟩
 
+/-! ## Variable-divisor witnesses -/
+
+/-- A Type II identity with ordering conditions sufficient for distinct denominators. -/
+theorem typeII_of_identity {n a b c d : ℕ}
+    (ha : 0 < a) (hd : 0 < d) (hab : a < b) (hbc : b < c * n)
+    (h : 4 * a * b * c * d = c * n + a + b) : HasExpansion n := by
+  have hb : 0 < b := by omega
+  have hcn : 0 < c * n := by omega
+  have hc : 0 < c := by
+    by_contra! hz
+    simp [show c = 0 by omega] at hcn
+  have hn : 0 < n := by
+    by_contra! hz
+    simp [show n = 0 by omega] at hcn
+  have had := Nat.mul_pos ha hd
+  have hdcn := Nat.mul_pos hd hcn
+  refine ⟨a * b * d, a * c * d * n, b * c * d * n, ?_, ?_, ?_, ?_⟩
+  · exact Nat.mul_pos (Nat.mul_pos ha hb) hd
+  · simpa [Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm] using
+      Nat.mul_lt_mul_of_pos_left hbc had
+  · simpa [Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm] using
+      Nat.mul_lt_mul_of_pos_right hab hdcn
+  · have ha' : (a : ℚ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt ha)
+    have hb' : (b : ℚ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hb)
+    have hc' : (c : ℚ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hc)
+    have hd' : (d : ℚ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hd)
+    have hn' : (n : ℚ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hn)
+    have hq : 4 * (a : ℚ) * b * c * d = (c : ℚ) * n + a + b := by exact_mod_cast h
+    let D : ℚ := (a : ℚ) * b * c * d * n
+    have hD : D ≠ 0 := mul_ne_zero
+      (mul_ne_zero (mul_ne_zero (mul_ne_zero ha' hb') hc') hd') hn'
+    push_cast
+    have ex : 1 / ((a : ℚ) * b * d) = ((c : ℚ) * n) / D := by
+      apply (div_eq_div_iff (mul_ne_zero (mul_ne_zero ha' hb') hd') hD).2
+      dsimp [D]
+      ring
+    have ey : 1 / ((a : ℚ) * c * d * n) = (b : ℚ) / D := by
+      apply (div_eq_div_iff (mul_ne_zero (mul_ne_zero (mul_ne_zero ha' hc') hd') hn') hD).2
+      dsimp [D]
+      ring
+    have ez : 1 / ((b : ℚ) * c * d * n) = (a : ℚ) / D := by
+      apply (div_eq_div_iff (mul_ne_zero (mul_ne_zero (mul_ne_zero hb' hc') hd') hn') hD).2
+      dsimp [D]
+      ring
+    rw [ex, ey, ez, ← add_div, ← add_div]
+    rw [show (c : ℚ) * n + b + a = 4 * (a : ℚ) * b * c * d by
+      rw [hq, add_right_comm]]
+    apply (div_eq_div_iff hn' hD).2
+    dsimp [D]
+    ring
+
+/-- Obláth's divisor criterion on the residual class modulo 4. The divisor need not be prime. -/
+theorem oblath_of_dvd_add_one {n q : ℕ} (hn4 : n % 4 = 1)
+    (hq4 : q % 4 = 3) (hq : q ∣ n + 1) : HasExpansion n := by
+  obtain ⟨b, hb⟩ := hq
+  let d := (q + 1) / 4
+  have hd : 0 < d := by dsimp [d]; omega
+  have hqeq : 4 * d = q + 1 := by dsimp [d]; omega
+  have hb0 : b ≠ 0 := by
+    intro h
+    simp [h] at hb
+  have hb1 : b ≠ 1 := by
+    intro h
+    rw [h, Nat.mul_one] at hb
+    omega
+  have h3b : 3 * b ≤ q * b := Nat.mul_le_mul_right b (by omega)
+  have hbn : b < n := by omega
+  apply typeII_of_identity (n := n) (a := 1) (b := b) (c := 1) (d := d) (by decide) hd
+  · omega
+  · simpa using hbn
+  · calc
+      4 * 1 * b * 1 * d = (4 * d) * b := by ring
+      _ = (q + 1) * b := by rw [hqeq]
+      _ = 1 * n + 1 + b := by rw [Nat.add_mul, ← hb]; simp
+
+/-- Refine the six-class reduction by discarding primes covered by Obláth's criterion. -/
+theorem conjecture_iff_residual840_without_oblath :
+    Conjecture ↔ ∀ p : ℕ, p.Prime → Residual840 (p % 840) →
+      (∀ q : ℕ, q ∣ p + 1 → q % 4 ≠ 3) → HasExpansion p := by
+  constructor
+  · intro h p hp hr _
+    exact conjecture_iff_residual840.mp h p hp hr
+  · intro h
+    apply conjecture_iff_residual840.mpr
+    intro p hp hr
+    by_cases hf : ∃ q : ℕ, q ∣ p + 1 ∧ q % 4 = 3
+    · obtain ⟨q, hd, hq⟩ := hf
+      have hm : (p % 840) % 4 = p % 4 := Nat.mod_mod_of_dvd _ (by decide)
+      have hr4 (r : ℕ) (hr' : Residual840 r) : r % 4 = 1 := by
+        rcases hr' with h1 | h2 | h3 | h4 | h5 | h6 <;> subst r <;> decide
+      exact oblath_of_dvd_add_one (hm.symm.trans (hr4 _ hr)) hq hd
+    · exact h p hp hr (fun q hd hq => hf ⟨q, hd, hq⟩)
+
 end ErdosStraus

@@ -30,3 +30,13 @@ example : HasExpansion 1321 := five_mod_seven 188 (by decide)
 example : HasExpansion 601 := six_mod_seven 85 (by decide)
 example : Residual840 (1009 % 840) := by decide
 example : ¬ Residual840 (193 % 840) := by decide
+
+#print axioms typeII_of_identity
+#print axioms oblath_of_dvd_add_one
+#print axioms conjecture_iff_residual840_without_oblath
+
+-- Remainder 361 mod 840: the second-stage filter applies where the first sieve does not.
+example : Residual840 (20521 % 840) := by decide
+example : HasExpansion 20521 :=
+  oblath_of_dvd_add_one (q := 31) (by decide) (by decide) (by decide)
+example : (4 / (20521 : ℚ)) = 1 / 5296 + 1 / 164168 + 1 / 108679216 := by norm_num

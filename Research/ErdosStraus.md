@@ -39,7 +39,7 @@ candidate residues for this sieve.
 This is a formalization of known mathematics, not a proof of the open
 conjecture or a claim that primes in these classes lack expansions.
 
-## Next experiment
+## Experiment selected after the modulo-840 sieve
 
 Test divisor-based witness criteria on primes in the six residual classes.
 Start by comparing positive solutions from Proposition 2.6 with the
@@ -54,3 +54,26 @@ polynomial formulas on congruence classes cannot finish the conjecture.
 - [Formal Conjectures: Erdős #242](https://github.com/google-deepmind/formal-conjectures/blob/main/FormalConjectures/ErdosProblems/242.lean), for the precise distinct-denominator statement.
 - Serge E. Salez, [The Erdős–Straus conjecture: New modular equations and checking up to N = 10^17](https://arxiv.org/abs/1406.6307), for the modular sieve context and the distinction between finite verification and a universal proof.
 - Christian Elsholtz and Terence Tao, [Counting the number of solutions to the Erdős–Straus equation on unit fractions](https://arxiv.org/abs/1107.1010), especially Propositions 1.6 and 1.9 and §10.
+
+- K. Obláth, “Sur l’équation diophantienne 4/n = 1/x₁ + 1/x₂ + 1/x₃,” Mathesis 59 (1950), 308–316.
+## 2026-11-25 · variable-divisor filter inside the six classes
+
+The reusable Type II lemma takes positive integers with `a < b < c n`
+and checks the relation `4 a b c d = c n + a + b`. It gives strictly
+increasing denominators `abd, acdn, bcdn` by writing the three fractions
+over the common denominator `abcd n`. This is the forward algebra of
+Elsholtz–Tao's Type II parameterization; it does not assert that every
+expansion admits these ordering conditions.
+
+In the classical criterion attributed to Obláth, take a divisor
+`q ≡ 3 mod 4` of `n + 1`, with `n ≡ 1 mod 4`. Set
+`d = (q + 1)/4` and `b = (n + 1)/q`. Lean checks `1 < b < n`,
+so `db, dn, dbn` are distinct and ordered. The divisor need not be prime.
+For example, 20521 has remainder 361 modulo 840, but the divisor 31 of
+20522 gives the expansion with denominators 5296, 164168, and 108679216.
+
+The conjecture now reduces to primes in the same six classes for which
+**no** divisor of `p + 1` is 3 modulo 4. This is not a resolution of
+the remaining case. Next, test how much the filter actually covers on an
+explicitly bounded sample, and investigate a different witness criterion
+on the cases it misses.
