@@ -151,4 +151,173 @@ theorem conjecture_iff_residual_primes :
     simp [show m = 0 by omega] at hm
     omega
 
+/-! ## The classical sieve modulo 840
+
+The witnesses below specialize the Type I and Type II constructions in
+Elsholtz–Tao, Proposition 1.9 and §10 (arXiv:1107.1010).
+-/
+
+/-- Type I with a = 1, d = 5, f = 7. -/
+theorem thirteen_mod_twenty (k : ℕ) : HasExpansion (20 * k + 13) := by
+  let n := 20 * k + 13
+  let b := 3 * k + 2
+  let c := k + 1
+  refine ⟨5 * c, 5 * b * c, 5 * b * n, by dsimp [c]; omega, ?_, ?_, ?_⟩
+  · have h := Nat.mul_lt_mul_of_pos_right (show 1 < b by dsimp [b]; omega)
+      (show 0 < 5 * c by dsimp [c]; omega)
+    simpa [Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm] using h
+  · exact Nat.mul_lt_mul_of_pos_left (show c < n by dsimp [c, n]; omega)
+      (show 0 < 5 * b by dsimp [b]; omega)
+  · change 4 / (n : ℚ) = 1 / (↑(5 * c) : ℚ) + 1 / (↑(5 * b * c) : ℚ) +
+      1 / (↑(5 * b * n) : ℚ)
+    have hnq : (0 : ℚ) < n := by exact_mod_cast (show 0 < n by dsimp [n]; omega)
+    have hbq : (0 : ℚ) < b := by exact_mod_cast (show 0 < b by dsimp [b]; omega)
+    have hcq : (0 : ℚ) < c := by exact_mod_cast (show 0 < c by dsimp [c]; omega)
+    push_cast
+    field_simp [ne_of_gt hnq, ne_of_gt hbq, ne_of_gt hcq, show (5 : ℚ) ≠ 0 by decide]
+    have h5 : (5 : ℚ) ≠ 0 := by decide
+    have h5b := mul_ne_zero h5 (ne_of_gt hbq)
+    rw [eq_div_iff (mul_ne_zero
+      (mul_ne_zero (mul_ne_zero h5 (ne_of_gt hcq)) (mul_ne_zero h5b (ne_of_gt hcq)))
+      (mul_ne_zero h5b (ne_of_gt hnq)))]
+    simp only [n, b, c, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_one]
+    ring
+
+/-- Type I with a = 1, d = 5, f = 3. -/
+theorem seventeen_mod_twenty (k : ℕ) : HasExpansion (20 * k + 17) := by
+  let n := 20 * k + 17
+  let b := 7 * k + 6
+  let c := k + 1
+  refine ⟨5 * c, 5 * b * c, 5 * b * n, by dsimp [c]; omega, ?_, ?_, ?_⟩
+  · have h := Nat.mul_lt_mul_of_pos_right (show 1 < b by dsimp [b]; omega)
+      (show 0 < 5 * c by dsimp [c]; omega)
+    simpa [Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm] using h
+  · exact Nat.mul_lt_mul_of_pos_left (show c < n by dsimp [c, n]; omega)
+      (show 0 < 5 * b by dsimp [b]; omega)
+  · change 4 / (n : ℚ) = 1 / (↑(5 * c) : ℚ) + 1 / (↑(5 * b * c) : ℚ) +
+      1 / (↑(5 * b * n) : ℚ)
+    have hnq : (0 : ℚ) < n := by exact_mod_cast (show 0 < n by dsimp [n]; omega)
+    have hbq : (0 : ℚ) < b := by exact_mod_cast (show 0 < b by dsimp [b]; omega)
+    have hcq : (0 : ℚ) < c := by exact_mod_cast (show 0 < c by dsimp [c]; omega)
+    push_cast
+    field_simp [ne_of_gt hnq, ne_of_gt hbq, ne_of_gt hcq, show (5 : ℚ) ≠ 0 by decide]
+    have h5 : (5 : ℚ) ≠ 0 := by decide
+    have h5b := mul_ne_zero h5 (ne_of_gt hbq)
+    rw [eq_div_iff (mul_ne_zero
+      (mul_ne_zero (mul_ne_zero h5 (ne_of_gt hcq)) (mul_ne_zero h5b (ne_of_gt hcq)))
+      (mul_ne_zero h5b (ne_of_gt hnq)))]
+    simp only [n, b, c, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_one]
+    ring
+
+/-- Type II with a = d = 1 and f = 7. -/
+theorem three_mod_seven (k : ℕ) (hk : 1 ≤ k) : HasExpansion (7 * k + 3) := by
+  let n := 7 * k + 3
+  let b := 2 * k + 1
+  refine ⟨b, 2 * n, b * (2 * n), by dsimp [b]; omega, by dsimp [n, b]; omega, ?_, ?_⟩
+  · have h := Nat.mul_lt_mul_of_pos_right (show 1 < b by dsimp [b]; omega)
+      (show 0 < 2 * n by dsimp [n]; omega)
+    simpa using h
+  · change 4 / (n : ℚ) = 1 / (b : ℚ) + 1 / (↑(2 * n) : ℚ) + 1 / (↑(b * (2 * n)) : ℚ)
+    have hnq : (0 : ℚ) < n := by exact_mod_cast (show 0 < n by dsimp [n]; omega)
+    have hbq : (0 : ℚ) < b := by exact_mod_cast (show 0 < b by dsimp [b]; omega)
+    push_cast
+    field_simp [ne_of_gt hnq, ne_of_gt hbq, show (2 : ℚ) ≠ 0 by decide]
+    simp only [n, b, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_one]
+    ring
+
+/-- Type II with a = 2, d = 1 and f = 7. -/
+theorem five_mod_seven (k : ℕ) (hk : 2 ≤ k) : HasExpansion (7 * k + 5) := by
+  let n := 7 * k + 5
+  let b := k + 1
+  refine ⟨2 * b, 2 * n, b * n, by dsimp [b]; omega, by dsimp [n, b]; omega, ?_, ?_⟩
+  · exact Nat.mul_lt_mul_of_pos_right (show 2 < b by dsimp [b]; omega)
+      (show 0 < n by dsimp [n]; omega)
+  · change 4 / (n : ℚ) = 1 / (↑(2 * b) : ℚ) + 1 / (↑(2 * n) : ℚ) + 1 / (↑(b * n) : ℚ)
+    have hnq : (0 : ℚ) < n := by exact_mod_cast (show 0 < n by dsimp [n]; omega)
+    have hbq : (0 : ℚ) < b := by exact_mod_cast (show 0 < b by dsimp [b]; omega)
+    push_cast
+    field_simp [ne_of_gt hnq, ne_of_gt hbq, show (2 : ℚ) ≠ 0 by decide]
+    simp only [n, b, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_one]
+    ring
+
+/-- Type II with a = 1, d = 2 and f = 7. -/
+theorem six_mod_seven (k : ℕ) (hk : 1 ≤ k) : HasExpansion (7 * k + 6) := by
+  let n := 7 * k + 6
+  let b := k + 1
+  refine ⟨2 * b, 2 * n, b * (2 * n), by dsimp [b]; omega, by dsimp [n, b]; omega, ?_, ?_⟩
+  · have h := Nat.mul_lt_mul_of_pos_right (show 1 < b by dsimp [b]; omega)
+      (show 0 < 2 * n by dsimp [n]; omega)
+    simpa using h
+  · change 4 / (n : ℚ) = 1 / (↑(2 * b) : ℚ) + 1 / (↑(2 * n) : ℚ) +
+      1 / (↑(b * (2 * n)) : ℚ)
+    have hnq : (0 : ℚ) < n := by exact_mod_cast (show 0 < n by dsimp [n]; omega)
+    have hbq : (0 : ℚ) < b := by exact_mod_cast (show 0 < b by dsimp [b]; omega)
+    push_cast
+    field_simp [ne_of_gt hnq, ne_of_gt hbq, show (2 : ℚ) ≠ 0 by decide]
+    simp only [n, b, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_one]
+    ring
+
+/-- The six square residues among integers coprime to 840. -/
+def Residual840 (r : ℕ) : Prop :=
+  r = 1 ∨ r = 121 ∨ r = 169 ∨ r = 289 ∨ r = 361 ∨ r = 529
+
+instance (r : ℕ) : Decidable (Residual840 r) := inferInstanceAs
+  (Decidable (r = 1 ∨ r = 121 ∨ r = 169 ∨ r = 289 ∨ r = 361 ∨ r = 529))
+
+private def Sieve840Hyp (r : ℕ) : Prop :=
+  r % 24 = 1 ∧ r % 5 ≠ 0 ∧ r % 7 ≠ 0 ∧
+    r % 20 ≠ 13 ∧ r % 20 ≠ 17 ∧ r % 7 ≠ 3 ∧ r % 7 ≠ 5 ∧ r % 7 ≠ 6
+
+instance (r : ℕ) : Decidable (Sieve840Hyp r) := by
+  unfold Sieve840Hyp
+  infer_instance
+
+set_option maxRecDepth 4096 in
+private theorem residue840_table (r : Fin 840) :
+    Sieve840Hyp r.val ↔ Residual840 r.val := by
+  let test := fun n : ℕ => decide (Sieve840Hyp n ↔ Residual840 n)
+  have ht : (List.range 840).all test = true := by decide
+  exact of_decide_eq_true (List.all_eq_true.mp ht r.val (List.mem_range.mpr r.isLt))
+
+/-- Only primes in the six classical residue classes modulo 840 still need solving. -/
+theorem conjecture_iff_residual840 :
+    Conjecture ↔ ∀ p : ℕ, p.Prime → Residual840 (p % 840) → HasExpansion p := by
+  constructor
+  · intro h p hp hr
+    have hh := hp.two_le
+    have h2 : p ≠ 2 := by
+      intro h2
+      subst p
+      exact (by decide : ¬ Residual840 (2 % 840)) hr
+    exact h p (by omega)
+  · intro h
+    apply conjecture_iff_residual_primes.mpr
+    intro p hp h24
+    have hh := hp.two_le
+    have h25 : 25 ≤ p := by omega
+    by_cases h13 : p % 20 = 13
+    · convert thirteen_mod_twenty (p / 20) using 1; omega
+    by_cases h17 : p % 20 = 17
+    · convert seventeen_mod_twenty (p / 20) using 1; omega
+    by_cases h3 : p % 7 = 3
+    · convert three_mod_seven (p / 7) (by omega) using 1; omega
+    by_cases h5 : p % 7 = 5
+    · convert five_mod_seven (p / 7) (by omega) using 1; omega
+    by_cases h6 : p % 7 = 6
+    · convert six_mod_seven (p / 7) (by omega) using 1; omega
+    have h5nz : p % 5 ≠ 0 := by
+      intro hm
+      rcases (Nat.dvd_prime hp).mp (Nat.dvd_of_mod_eq_zero hm) with hh | hh <;> omega
+    have h7nz : p % 7 ≠ 0 := by
+      intro hm
+      rcases (Nat.dvd_prime hp).mp (Nat.dvd_of_mod_eq_zero hm) with hh | hh <;> omega
+    let r : Fin 840 := ⟨p % 840, Nat.mod_lt _ (by decide)⟩
+    have hmod24 : r.val % 24 = p % 24 := Nat.mod_mod_of_dvd _ (by decide)
+    have hmod5 : r.val % 5 = p % 5 := Nat.mod_mod_of_dvd _ (by decide)
+    have hmod7 : r.val % 7 = p % 7 := Nat.mod_mod_of_dvd _ (by decide)
+    have hmod20 : r.val % 20 = p % 20 := Nat.mod_mod_of_dvd _ (by decide)
+    apply h p hp
+    exact (residue840_table r).mp ⟨hmod24.trans h24, hmod5 ▸ h5nz, hmod7 ▸ h7nz,
+      hmod20 ▸ h13, hmod20 ▸ h17, hmod7 ▸ h3, hmod7 ▸ h5, hmod7 ▸ h6⟩
+
 end ErdosStraus

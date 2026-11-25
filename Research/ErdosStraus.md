@@ -15,12 +15,42 @@ Multiplying the input and all three witnesses by the same positive integer prese
 
 Lean 4.19.0 and the pinned mathlib dependencies: clean `lake build`, followed by `lake env lean Audit/ErdosStraus.lean`. All seven results use only the standard Lean axioms printed by the audit. The code is an independent formalization of elementary, known methods.
 
+## 2026-11-25 · classical sieve modulo 840
+
+The following five families specialize Elsholtz–Tao, Proposition 1.9 and §10.
+Each row lists the denominators in strictly increasing order.
+
+| Family | Conditions | Denominators |
+|---|---|---|
+| n = 20k + 13 | c = k + 1, b = 3k + 2 | 5c, 5bc, 5bn |
+| n = 20k + 17 | c = k + 1, b = 7k + 6 | 5c, 5bc, 5bn |
+| n = 7k + 3 | k ≥ 1, b = 2k + 1 | b, 2n, 2bn |
+| n = 7k + 5 | k ≥ 2, b = k + 1 | 2b, 2n, bn |
+| n = 7k + 6 | k ≥ 1, b = k + 1 | 2b, 2n, 2bn |
+
+A prime congruent to 1 modulo 24 is at least 25, so the lower bounds in
+the last three rows do not exclude any eligible primes. Such a prime is
+coprime to 5 and 7. Among the 24 residues modulo 840 meeting these
+conditions, the five new families cover 18. The Lean kernel checks the
+finite sieve table over all 840 residues using `decide`; combining it with
+the prime reduction leaves exactly **1, 121, 169, 289, 361, 529** as the
+candidate residues for this sieve.
+
+This is a formalization of known mathematics, not a proof of the open
+conjecture or a claim that primes in these classes lack expansions.
+
 ## Next experiment
 
-Compare the statement and witness ordering of selected modular identities in the literature. Kernel-check one identity on a residual subclass of primes and verify the exact range it covers before claiming any advance over this baseline. In particular, do not assume a published identity using positive denominators also guarantees strict order.
+Test divisor-based witness criteria on primes in the six residual classes.
+Start by comparing positive solutions from Proposition 2.6 with the
+strict-denominator target and checking how to handle ties. Track sample
+coverage separately from universal theorems. Elsholtz–Tao, Proposition 1.6
+and the discussion before Proposition 1.9, explain why a finite list of
+polynomial formulas on congruence classes cannot finish the conjecture.
 
 ### Sources
 
 - [Erdős Problems #242](https://www.erdosproblems.com/242).
 - [Formal Conjectures: Erdős #242](https://github.com/google-deepmind/formal-conjectures/blob/main/FormalConjectures/ErdosProblems/242.lean), for the precise distinct-denominator statement.
 - Serge E. Salez, [The Erdős–Straus conjecture: New modular equations and checking up to N = 10^17](https://arxiv.org/abs/1406.6307), for the modular sieve context and the distinction between finite verification and a universal proof.
+- Christian Elsholtz and Terence Tao, [Counting the number of solutions to the Erdős–Straus equation on unit fractions](https://arxiv.org/abs/1107.1010), especially Propositions 1.6 and 1.9 and §10.
