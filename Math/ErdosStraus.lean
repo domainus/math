@@ -1,3 +1,4 @@
+import Mathlib.Algebra.Order.Field.Rat
 import Mathlib.Data.Nat.Prime.Basic
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
@@ -412,5 +413,102 @@ theorem conjecture_iff_residual840_without_oblath :
         rcases hr' with h1 | h2 | h3 | h4 | h5 | h6 <;> subst r <;> decide
       exact oblath_of_dvd_add_one (hm.symm.trans (hr4 _ hr)) hq hd
     · exact h p hp hr (fun q hd hq => hf ⟨q, hd, hq⟩)
+
+/-- Positive certificates without an ordering or distinctness requirement. -/
+def HasPositiveExpansion (n : ℕ) : Prop :=
+  ∃ x y z : ℕ, 0 < x ∧ 0 < y ∧ 0 < z ∧
+    (4 / (n : ℚ)) = 1 / (x : ℚ) + 1 / (y : ℚ) + 1 / (z : ℚ)
+
+private theorem no_repeated_of_prime_mod_four {p a b : ℕ} (hp : p.Prime)
+    (hp4 : p % 4 = 1) (ha : 0 < a) (hb : 0 < b)
+    (h : (4 / (p : ℚ)) = 2 / (a : ℚ) + 1 / (b : ℚ)) : False := by
+  have hP : (0 : ℚ) < p := by exact_mod_cast hp.pos
+  have hA : (0 : ℚ) < a := by exact_mod_cast ha
+  have hB : (0 : ℚ) < b := by exact_mod_cast hb
+  have hxq : (p : ℚ) < 2 * a := by
+    have hh : (2 : ℚ) / a < 4 / p := by
+      rw [h]
+      exact lt_add_of_pos_right _ (one_div_pos.mpr hB)
+    have hh' := (div_lt_div_iff₀ hA hP).1 hh
+    calc
+      (p : ℚ) = (2 * p) / 2 := by ring
+      _ < (4 * a) / 2 := div_lt_div_of_pos_right hh' (by decide)
+      _ = 2 * a := by ring
+  have hyq : (p : ℚ) < 4 * b := by
+    have hh : (1 : ℚ) / b < 4 / p := by
+      rw [h]
+      exact lt_add_of_pos_left _ (div_pos (by decide) hA)
+    simpa only [one_mul] using (div_lt_div_iff₀ hB hP).1 hh
+  have hx : p ≤ 2 * a := by exact_mod_cast hxq.le
+  have hy : p ≤ 4 * b := by exact_mod_cast hyq.le
+  have hc : 4 * (a : ℚ) * b = (2 * b + a) * p := by
+    field_simp [hP.ne', hA.ne', hB.ne'] at h
+    first | exact h | simpa [mul_comm, mul_left_comm, mul_assoc, add_mul] using h
+  have hf : (2 * (a : ℚ) - p) * (4 * (b : ℚ) - p) = (p : ℚ) ^ 2 := by
+    calc
+      _ = 2 * (4 * (a : ℚ) * b) - 2 * ((2 * b + a) * p) + (p : ℚ) ^ 2 := by ring
+      _ = _ := by rw [hc, sub_self, zero_add]
+  have hf' : (2 * a - p) * (4 * b - p) = p ^ 2 := by
+    exact_mod_cast (show (↑((2 * a - p) * (4 * b - p)) : ℚ) = (p : ℚ) ^ 2 by
+      push_cast [Nat.cast_sub hx, Nat.cast_sub hy]
+      exact hf)
+  have hd : 4 * b - p ∣ p ^ 2 := ⟨2 * a - p, by rw [← hf', Nat.mul_comm]⟩
+  have hmod : (4 * b - p) % 4 = 3 := by omega
+  obtain ⟨k, hk, he⟩ := (Nat.dvd_prime_pow hp).mp hd
+  have hcase : k = 0 ∨ k = 1 ∨ k = 2 := by omega
+  rcases hcase with rfl | rfl | rfl
+  · simp [he] at hmod
+  · simp [he, hp4] at hmod
+  · have hsq : p ^ 2 % 4 = 1 := by rw [pow_two, Nat.mul_mod, hp4]
+    simp [he, hsq] at hmod
+
+/-- On primes congruent to one modulo four, positive certificates automatically
+have distinct denominators and can be sorted. -/
+theorem hasExpansion_iff_positive_of_prime_mod_four {p : ℕ}
+    (hp : p.Prime) (hp4 : p % 4 = 1) : HasExpansion p ↔ HasPositiveExpansion p := by
+  constructor
+  · rintro ⟨a, b, c, ha, hab, hbc, h⟩
+    exact ⟨a, b, c, by omega, by omega, by omega, h⟩
+  · rintro ⟨a, b, c, ha, hb, hc, h⟩
+    have hab : a ≠ b := by
+      rintro rfl
+      apply no_repeated_of_prime_mod_four hp hp4 ha hc
+      rwa [show (2 : ℚ) / a = 1 / (a : ℚ) + 1 / (a : ℚ) by ring]
+    have hac : a ≠ c := by
+      rintro rfl
+      apply no_repeated_of_prime_mod_four hp hp4 ha hb
+      rwa [show (2 : ℚ) / a = 1 / (a : ℚ) + 1 / (a : ℚ) by ring, add_right_comm]
+    have hbc : b ≠ c := by
+      rintro rfl
+      apply no_repeated_of_prime_mod_four hp hp4 hb ha
+      rw [show (2 : ℚ) / b = 1 / (b : ℚ) + 1 / (b : ℚ) by ring]
+      simpa only [add_assoc, add_left_comm, add_comm] using h
+    rcases lt_or_gt_of_ne hab with h₁ | h₁ <;>
+      rcases lt_or_gt_of_ne hac with h₂ | h₂ <;>
+      rcases lt_or_gt_of_ne hbc with h₃ | h₃
+    · exact ⟨a, b, c, ha, h₁, h₃, h⟩
+    · exact ⟨a, c, b, ha, h₂, h₃, by simpa only [add_assoc, add_left_comm, add_comm] using h⟩
+    · omega
+    · exact ⟨c, a, b, hc, h₂, h₁, by simpa only [add_assoc, add_left_comm, add_comm] using h⟩
+    · exact ⟨b, a, c, hb, h₁, h₂, by simpa only [add_assoc, add_left_comm, add_comm] using h⟩
+    · omega
+    · exact ⟨b, c, a, hb, h₃, h₂, by simpa only [add_assoc, add_left_comm, add_comm] using h⟩
+    · exact ⟨c, b, a, hc, h₃, h₁, by simpa only [add_assoc, add_left_comm, add_comm] using h⟩
+
+/-- The remaining primes may be certified by any positive triple, without
+pre-sorting the denominators or checking them separately for ties. -/
+theorem conjecture_iff_residual840_positive :
+    Conjecture ↔ ∀ p : ℕ, p.Prime → Residual840 (p % 840) →
+      (∀ q : ℕ, q ∣ p + 1 → q % 4 ≠ 3) → HasPositiveExpansion p := by
+  have hm (p : ℕ) (hr : Residual840 (p % 840)) : p % 4 = 1 := by
+    rw [← Nat.mod_mod_of_dvd p (show 4 ∣ 840 by decide)]
+    generalize p % 840 = r at hr ⊢
+    rcases hr with h | h | h | h | h | h <;> subst r <;> decide
+  rw [conjecture_iff_residual840_without_oblath]
+  constructor
+  · intro h p hp hr hd
+    exact (hasExpansion_iff_positive_of_prime_mod_four hp (hm p hr)).mp (h p hp hr hd)
+  · intro h p hp hr hd
+    exact (hasExpansion_iff_positive_of_prime_mod_four hp (hm p hr)).mpr (h p hp hr hd)
 
 end ErdosStraus

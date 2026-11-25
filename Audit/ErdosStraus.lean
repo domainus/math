@@ -40,3 +40,11 @@ example : Residual840 (20521 % 840) := by decide
 example : HasExpansion 20521 :=
   oblath_of_dvd_add_one (q := 31) (by decide) (by decide) (by decide)
 example : (4 / (20521 : ℚ)) = 1 / 5296 + 1 / 164168 + 1 / 108679216 := by norm_num
+
+#print axioms hasExpansion_iff_positive_of_prime_mod_four
+#print axioms conjecture_iff_residual840_positive
+
+-- The same certificate now works written in descending order.
+example (hp : (20521 : ℕ).Prime) : HasExpansion 20521 :=
+  (hasExpansion_iff_positive_of_prime_mod_four hp (by decide)).mpr
+    ⟨108679216, 164168, 5296, by decide, by decide, by decide, by norm_num⟩

@@ -77,3 +77,19 @@ The conjecture now reduces to primes in the same six classes for which
 the remaining case. Next, test how much the filter actually covers on an
 explicitly bounded sample, and investigate a different witness criterion
 on the cases it misses.
+
+## 2026-11-25 · positive certificates suffice on the remaining primes
+
+A certificate with positive denominators normally need not be sorted or
+distinct. On a prime `p ≡ 1 mod 4`, however, a repeated denominator
+`a` would give `4/p = 2/a + 1/b` with `a,b > 0`. Both fractions are
+positive, so `2a > p` and `4b > p`. Clearing fractions gives
+`(2a − p)(4b − p) = p²`. The positive factor `4b − p` is 3 modulo 4,
+but the only positive divisors of `p²` are `1, p, p²`, all 1 modulo 4.
+Thus a repeated denominator is impossible, and the three witnesses can
+be sorted. Each residual class modulo 840 is 1 modulo 4, so this gives an
+equivalent reduction that accepts positive certificates directly.
+
+This bridge does not cover another prime by itself. It removes the need
+to prove strict order separately when importing positive witness formulas
+or computational certificates for these residual primes.
