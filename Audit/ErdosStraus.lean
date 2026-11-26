@@ -75,3 +75,16 @@ example : HasExpansion 1009 :=
   salez14b_of_identity (f := 3) (x := 253) (d := 23) (e := 11) (t := 4)
     (by decide) (by decide) (by decide) (by decide) (by decide) (by decide) (by decide)
 example : (4 / (1009 : ℚ)) = 1 / 253 + 1 / 92828 + 1 / 1021108 := by norm_num
+
+#print axioms typeII_of_shifted_multiple
+#print axioms conjecture_iff_residual840_after_variable_typeII
+
+example : HasExpansion 2521 :=
+  typeII_of_shifted_multiple (a := 4) (c := 3) (q := 47) (k := 55)
+    (by decide) (by decide) (by decide) (by decide) (by decide)
+example : (4 / (2521 : ℚ)) = 1 / 644 + 1 / 30252 + 1 / 1217643 := by norm_num
+
+example : HasExpansion 66529 :=
+  typeII_of_shifted_multiple (a := 8) (c := 3) (q := 95) (k := 703)
+    (by decide) (by decide) (by decide) (by decide) (by decide)
+example : (4 / (66529 : ℚ)) = 1 / 16808 + 1 / 1596696 + 1 / 419332287 := by norm_num

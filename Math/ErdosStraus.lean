@@ -679,4 +679,53 @@ theorem conjecture_iff_residual840_after_salez14b :
       exact salez14b_of_identity hf hfn hd ht hfour hx he
     · exact h p hp hr ho hs hc
 
+/-- The Type II witness with d = 1, allowing a variable first parameter.
+The bound on c*k is exactly what is needed for a < c*k − a. -/
+theorem typeII_of_shifted_multiple {n a c q k : ℕ}
+    (ha : 0 < a) (hq : 2 ≤ q) (hqac : q + 1 = 4 * a * c)
+    (hk : n + 4 * a ^ 2 = q * k) (hsize : 2 * a < c * k) :
+    HasExpansion n := by
+  let b := c * k - a
+  have hab : a < b := by dsimp [b]; omega
+  have hba : b + a = c * k := by dsimp [b]; omega
+  have he : q * b + q * a = c * n + (q * a + a) := by
+    calc
+      q * b + q * a = q * (b + a) := by ring
+      _ = q * (c * k) := by rw [hba]
+      _ = c * (q * k) := by ring
+      _ = c * (n + 4 * a ^ 2) := by rw [← hk]
+      _ = c * n + (4 * a * c) * a := by ring
+      _ = c * n + (q * a + a) := by rw [← hqac]; ring
+  have hqb : q * b = c * n + a := by omega
+  have hb2 : 2 * b ≤ q * b := Nat.mul_le_mul_right b hq
+  have hbn : b < c * n := by omega
+  apply typeII_of_identity (n := n) (a := a) (b := b) (c := c) (d := 1)
+    ha (by decide) hab hbn
+  calc
+    4 * a * b * c * 1 = (4 * a * c) * b := by ring
+    _ = (q + 1) * b := by rw [← hqac]
+    _ = q * b + b := by ring
+    _ = (c * n + a) + b := by rw [hqb]
+
+/-- A search predicate for the variable-parameter Type II witness. -/
+def HasShiftedTypeIICertificate (n : ℕ) : Prop :=
+  ∃ a c q k : ℕ, 0 < a ∧ 2 ≤ q ∧ q + 1 = 4 * a * c ∧
+    n + 4 * a ^ 2 = q * k ∧ 2 * a < c * k
+
+/-- The variable-parameter Type II search can further reduce the residual primes. -/
+theorem conjecture_iff_residual840_after_variable_typeII :
+    Conjecture ↔ ∀ p : ℕ, p.Prime → Residual840 (p % 840) →
+      (∀ q : ℕ, q ∣ p + 1 → q % 4 ≠ 3) →
+      (∀ q : ℕ, 11 ≤ q → q ∣ p + 4 → q % 4 ≠ 3) →
+      ¬ HasSalez14bCertificate p → ¬ HasShiftedTypeIICertificate p → HasExpansion p := by
+  rw [conjecture_iff_residual840_after_salez14b]
+  constructor
+  · intro h p hp hr ho hs hsa _
+    exact h p hp hr ho hs hsa
+  · intro h p hp hr ho hs hsa
+    by_cases hc : HasShiftedTypeIICertificate p
+    · obtain ⟨a, c, q, k, ha, hq, hqac, hk, hsize⟩ := hc
+      exact typeII_of_shifted_multiple ha hq hqac hk hsize
+    · exact h p hp hr ho hs hsa hc
+
 end ErdosStraus

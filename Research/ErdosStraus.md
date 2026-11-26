@@ -148,3 +148,28 @@ checks divisor pairs of `x = (p + f)/4` for `e + 1` divisible by
 `f`; every selected witness was checked with exact rational
 arithmetic. This does not exhaust Salez certificates, much less all
 possible expansions. The counts are not counterexamples.
+
+## 2026-11-26 · variable Type II parameters
+
+For the `d = 1` case of the Type II identity, choose positive `a`,
+`q ≥ 2` with `q + 1 = 4ac`, and write `n + 4a² = qk`.
+When `2a < ck`, put `b = ck − a`. Multiplying `b + a = ck`
+by `q` gives `qb = cn + a` after cancellation. The hypotheses
+imply `a < b`, and `2b ≤ qb = cn + a` then gives `b < cn`.
+This checks the preconditions for the ordered denominators
+`ab, acn, bcn` and gives another filter in the formal reduction.
+This is an algebraic specialization of the existing Type II identity.
+
+Lean checks two examples: `(n,a,c,q,k) = (2521,4,3,47,55)`
+and `(66529,8,3,95,703)`, with denominators
+`(644,30252,1217643)` and `(16808,1596696,419332287)`, respectively.
+The latter uses a composite divisor `q = 95`.
+
+**Bounded computation, separate from Lean.** In the previous sample,
+extend the Salez search to `f = 15,19,…,327` with `f ≤ p`.
+This finds witnesses for 215 of the last 217 enumerated primes;
+2521 and 66529 are the two remaining cases. The witnesses from all
+stages were checked with exact rational arithmetic. This is a small
+test of the certificate pipeline, not a new computational record
+or a universal proof. Lean checks the general theorems and the
+two examples above, not the completeness of the sample enumeration.
