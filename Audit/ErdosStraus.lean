@@ -122,3 +122,12 @@ example : (4 / (86083321 : ℚ)) = 1 / 21521472 + 1 / 721722563264 + 1 / 6067395
   (fixed_first_iff_factorization
     (n := 86083321) (x := 21521472) (y := 721722563264) (z := 60673952879118768)
     (by decide) (by decide) (by decide) (by decide) (by decide)).mpr (by decide)
+
+#print axioms first_denominator_bounds
+#print axioms hasExpansion_iff_bounded_factorization
+
+-- The factor-pair search gives an ordered solution with its 27th candidate x.
+example : HasExpansion 8803369 :=
+  (hasExpansion_iff_bounded_factorization (by decide)).mpr
+    ⟨2200869, 181085300330, 3293760527702370, by decide, by decide, by decide,
+      by decide, by decide, by decide⟩

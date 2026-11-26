@@ -192,3 +192,18 @@ larger computational run: 3,842,281; 5,410,441; 25,569,769; and
 86,083,321. Their explicit denominators are also checked independently
 against the factor equation in Lean. This does not certify the entire
 search range in Lean or settle the conjecture.
+
+## 2026-11-26 · bounds for the first denominator
+
+For an ordered solution, positivity gives `1/x < 4/n`, and the two
+later fractions are strictly smaller than `1/x`, so `4/n < 3/x`.
+Lean converts both inequalities to exact integer bounds
+`n < 4x < 3n` and combines them with the factorization. This gives
+a finite search: try only the first denominators in this interval,
+and for each one try the divisors of `(nx)^2`.
+
+For `n = 8803369`, Lean checks the ordered triple
+`(2200869, 181085300330, 3293760527702370)` using the bounded
+factorization theorem. Here `A = 107` and the factors are
+`1065207649` and `352413001402225929`. The example certifies this
+triple, not the result of searching all smaller choices of `x`.

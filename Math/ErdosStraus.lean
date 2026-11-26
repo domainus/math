@@ -771,4 +771,49 @@ theorem fixed_first_iff_factorization {n x y z : ℕ}
     rw [sub_mul, sub_mul, sub_eq_iff_eq_add] at h
     convert h using 1 <;> ring
 
+/-- Every ordered solution has its first denominator strictly between
+`n / 4` and `3n / 4` (expressed without truncated division). -/
+theorem first_denominator_bounds {n x y z : ℕ}
+    (hn : 0 < n) (hx : 0 < x) (hxy : x < y) (hyz : y < z)
+    (h : 4 / (n : ℚ) = 1 / (x : ℚ) + 1 / (y : ℚ) + 1 / (z : ℚ)) :
+    n < 4 * x ∧ 4 * x < 3 * n := by
+  have hnq : (0 : ℚ) < (n : ℚ) := by exact_mod_cast hn
+  have hxq : (0 : ℚ) < (x : ℚ) := by exact_mod_cast hx
+  have hxyq : (x : ℚ) < (y : ℚ) := by exact_mod_cast hxy
+  have hxzq : (x : ℚ) < (z : ℚ) := by exact_mod_cast (hxy.trans hyz)
+  have hyq := hxq.trans hxyq
+  have hzq := hxq.trans hxzq
+  have hl : 1 / (x : ℚ) < 4 / (n : ℚ) := by
+    rw [h]
+    exact (lt_add_of_pos_right _ (div_pos zero_lt_one hyq)).trans
+      (lt_add_of_pos_right _ (div_pos zero_lt_one hzq))
+  have hu : 4 / (n : ℚ) < 3 / (x : ℚ) := by
+    rw [h]
+    calc
+      _ < 1 / (x : ℚ) + 1 / (x : ℚ) + 1 / (x : ℚ) :=
+        add_lt_add (add_lt_add_left (div_lt_div_of_pos_left zero_lt_one hxq hxyq) _)
+          (div_lt_div_of_pos_left zero_lt_one hxq hxzq)
+      _ = _ := by ring
+  have hl' := (div_lt_div_iff₀ hxq hnq).mp hl
+  have hu' := (div_lt_div_iff₀ hnq hxq).mp hu
+  exact ⟨by exact_mod_cast (show (n : ℚ) < 4 * (x : ℚ) by simpa using hl'),
+    by exact_mod_cast hu'⟩
+
+/-- The whole strict expansion problem reduces to integer factor equations
+for first denominators in the explicit bounded interval. -/
+theorem hasExpansion_iff_bounded_factorization {n : ℕ} (hn : 0 < n) :
+    HasExpansion n ↔ ∃ x y z : ℕ, 1 ≤ x ∧ x < y ∧ y < z ∧
+      n < 4 * x ∧ 4 * x < 3 * n ∧
+      let a : ℤ := 4 * (x : ℤ) - (n : ℤ)
+      let b : ℤ := (n : ℤ) * (x : ℤ)
+      (a * (y : ℤ) - b) * (a * (z : ℤ) - b) = b ^ 2 := by
+  constructor
+  · rintro ⟨x, y, z, hx, hxy, hyz, h⟩
+    have ⟨hlo, hhi⟩ := first_denominator_bounds hn (by omega) hxy hyz h
+    exact ⟨x, y, z, hx, hxy, hyz, hlo, hhi,
+      (fixed_first_iff_factorization hn (by omega) (by omega) (by omega) hlo).mp h⟩
+  · rintro ⟨x, y, z, hx, hxy, hyz, hlo, _, h⟩
+    exact ⟨x, y, z, hx, hxy, hyz,
+      (fixed_first_iff_factorization hn (by omega) (by omega) (by omega) hlo).mpr h⟩
+
 end ErdosStraus
