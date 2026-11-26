@@ -1,4 +1,5 @@
 import Math.ErdosStraus
+import Math.ReducedRemainder
 
 open ErdosStraus
 
@@ -131,3 +132,24 @@ example : HasExpansion 8803369 :=
   (hasExpansion_iff_bounded_factorization (by decide)).mpr
     ⟨2200869, 181085300330, 3293760527702370, by decide, by decide, by decide,
       by decide, by decide, by decide⟩
+
+#print axioms reduced_remainder_iff_one_divisor
+#print axioms fixed_first_iff_reduced_one_divisor
+
+example : HasExpansion 6 := by
+  have hab : IsCoprime (1 : ℤ) 6 := ⟨1, 0, by decide⟩
+  obtain ⟨y, z, hy, hz, h⟩ :=
+    (fixed_first_iff_reduced_one_divisor (n := 6) (x := 2) (k := 2)
+      (by decide) (by decide) (by decide) (by decide) (by decide)
+      hab (by decide) (by decide)).mpr
+      ⟨3, by decide, by decide, ⟨12, by decide⟩, ⟨9, by decide⟩, by decide⟩
+  exact ⟨2, y, z, by decide, hy, hz, h⟩
+
+example : HasExpansion 13 := by
+  have hab : IsCoprime (3 : ℤ) 52 := ⟨-17, 1, by decide⟩
+  obtain ⟨y, z, hy, hz, h⟩ :=
+    (fixed_first_iff_reduced_one_divisor (n := 13) (x := 4) (k := 1)
+      (by decide) (by decide) (by decide) (by decide) (by decide)
+      hab (by decide) (by decide)).mpr
+      ⟨2, by decide, by decide, ⟨1352, by decide⟩, ⟨18, by decide⟩, by decide⟩
+  exact ⟨4, y, z, by decide, hy, hz, h⟩

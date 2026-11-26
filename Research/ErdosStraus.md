@@ -207,3 +207,21 @@ For `n = 8803369`, Lean checks the ordered triple
 factorization theorem. Here `A = 107` and the factors are
 `1065207649` and `352413001402225929`. The example certifies this
 triple, not the result of searching all smaller choices of `x`.
+## 2026-11-26 · one congruence for the reduced remainder
+
+Reduce `(4x − n)/(nx)` to `a/b` with `a, b > 0` and
+`gcd(a,b)=1`. An ordered expansion starting at `x` exists
+if and only if some positive divisor `u` of `b²` satisfies
+`u < b`, `a ∣ u+b`, and `ax < u+b`. The last inequality
+enforces that the reconstructed second denominator exceeds `x`.
+
+If `uv=b²`, then `b(v+b)=v(u+b)`. Since `a` and `b` are
+coprime, divisibility of `u+b` by `a` implies divisibility of
+`v+b` by `a`. Thus only the smaller divisor requires a
+congruence test. Reducing the remainder also replaces the search
+on `(nx)²` by one on `b²`. This is an exact search criterion,
+not a guarantee that a divisor exists or a solution to the conjecture.
+
+The audit exercises cancellation with `n=6`, `x=2`, and the
+remainder `2/12=1/6`, and a nontrivial congruence with `n=13`,
+`x=4`, and the remainder `3/52`.
