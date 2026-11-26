@@ -728,4 +728,47 @@ theorem conjecture_iff_residual840_after_variable_typeII :
       exact typeII_of_shifted_multiple ha hq hqac hk hsize
     · exact h p hp hr ho hs hsa hc
 
+/-- Once the first denominator is fixed, the remaining equation is equivalent
+to a factorization of `(n * x)^2`. Integer subtraction avoids truncation. -/
+theorem fixed_first_iff_factorization {n x y z : ℕ}
+    (hn : 0 < n) (hx : 0 < x) (hy : 0 < y) (hz : 0 < z)
+    (hsize : n < 4 * x) :
+    (4 / (n : ℚ) = 1 / (x : ℚ) + 1 / (y : ℚ) + 1 / (z : ℚ)) ↔
+      let a : ℤ := 4 * (x : ℤ) - (n : ℤ)
+      let b : ℤ := (n : ℤ) * (x : ℤ)
+      (a * (y : ℤ) - b) * (a * (z : ℤ) - b) = b ^ 2 := by
+  have hnq : (0 : ℚ) < (n : ℚ) := by exact_mod_cast hn
+  have hxq : (0 : ℚ) < (x : ℚ) := by exact_mod_cast hx
+  have hyq : (0 : ℚ) < (y : ℚ) := by exact_mod_cast hy
+  have hzq : (0 : ℚ) < (z : ℚ) := by exact_mod_cast hz
+  let a : ℚ := 4 * (x : ℚ) - (n : ℚ)
+  let b : ℚ := (n : ℚ) * (x : ℚ)
+  have hcast :
+      ((4 * (x : ℤ) - (n : ℤ)) * (y : ℤ) - (n : ℤ) * (x : ℤ)) *
+        ((4 * (x : ℤ) - (n : ℤ)) * (z : ℤ) - (n : ℤ) * (x : ℤ)) =
+        ((n : ℤ) * (x : ℤ)) ^ 2 ↔
+      (a * (y : ℚ) - b) * (a * (z : ℚ) - b) = b ^ 2 := by
+    dsimp [a, b]
+    norm_cast
+  dsimp only
+  rw [hcast]
+  have hineq : (n : ℚ) < 4 * (x : ℚ) := by exact_mod_cast hsize
+  have ha : a ≠ 0 := ne_of_gt (sub_pos.mpr hineq)
+  have hfactor :
+      (a * (y : ℚ) - b) * (a * (z : ℚ) - b) - b ^ 2 =
+        a * (a * (y : ℚ) * (z : ℚ) - b * ((y : ℚ) + (z : ℚ))) := by ring
+  have hequiv :
+      ((a * (y : ℚ) - b) * (a * (z : ℚ) - b) = b ^ 2) ↔
+      a * (y : ℚ) * (z : ℚ) = b * ((y : ℚ) + (z : ℚ)) := by
+    rw [← sub_eq_zero, hfactor, mul_eq_zero, or_iff_right ha, sub_eq_zero]
+  rw [hequiv]
+  dsimp [a, b]
+  constructor <;> intro h
+  · field_simp [ne_of_gt hnq, ne_of_gt hxq, ne_of_gt hyq, ne_of_gt hzq] at h
+    rw [sub_mul, sub_mul, sub_eq_iff_eq_add]
+    convert h using 1 <;> ring
+  · field_simp [ne_of_gt hnq, ne_of_gt hxq, ne_of_gt hyq, ne_of_gt hzq]
+    rw [sub_mul, sub_mul, sub_eq_iff_eq_add] at h
+    convert h using 1 <;> ring
+
 end ErdosStraus

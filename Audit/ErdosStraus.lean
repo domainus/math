@@ -88,3 +88,37 @@ example : HasExpansion 66529 :=
   typeII_of_shifted_multiple (a := 8) (c := 3) (q := 95) (k := 703)
     (by decide) (by decide) (by decide) (by decide) (by decide)
 example : (4 / (66529 : ℚ)) = 1 / 16808 + 1 / 1596696 + 1 / 419332287 := by norm_num
+
+#print axioms fixed_first_iff_factorization
+
+example : HasExpansion 3842281 :=
+  typeII_of_shifted_multiple (a := 2) (c := 6) (q := 47) (k := 81751)
+    (by decide) (by decide) (by decide) (by decide) (by decide)
+example : (4 / (3842281 : ℚ)) = 1 / 981008 + 1 / 46107372 + 1 / 11307925197744 :=
+  (fixed_first_iff_factorization
+    (n := 3842281) (x := 981008) (y := 46107372) (z := 11307925197744)
+    (by decide) (by decide) (by decide) (by decide) (by decide)).mpr (by decide)
+
+example : HasExpansion 5410441 :=
+  typeII_of_shifted_multiple (a := 2) (c := 24) (q := 191) (k := 28327)
+    (by decide) (by decide) (by decide) (by decide) (by decide)
+example : (4 / (5410441 : ℚ)) = 1 / 1359692 + 1 / 259701168 + 1 / 88278400130064 :=
+  (fixed_first_iff_factorization
+    (n := 5410441) (x := 1359692) (y := 259701168) (z := 88278400130064)
+    (by decide) (by decide) (by decide) (by decide) (by decide)).mpr (by decide)
+
+example : HasExpansion 25569769 :=
+  typeII_of_shifted_multiple (a := 4) (c := 3) (q := 47) (k := 544039)
+    (by decide) (by decide) (by decide) (by decide) (by decide)
+example : (4 / (25569769 : ℚ)) = 1 / 6528452 + 1 / 306837228 + 1 / 125198257175691 :=
+  (fixed_first_iff_factorization
+    (n := 25569769) (x := 6528452) (y := 306837228) (z := 125198257175691)
+    (by decide) (by decide) (by decide) (by decide) (by decide)).mpr (by decide)
+
+example : HasExpansion 86083321 :=
+  typeII_of_shifted_multiple (a := 16) (c := 524) (q := 33535) (k := 2567)
+    (by decide) (by decide) (by decide) (by decide) (by decide)
+example : (4 / (86083321 : ℚ)) = 1 / 21521472 + 1 / 721722563264 + 1 / 60673952879118768 :=
+  (fixed_first_iff_factorization
+    (n := 86083321) (x := 21521472) (y := 721722563264) (z := 60673952879118768)
+    (by decide) (by decide) (by decide) (by decide) (by decide)).mpr (by decide)

@@ -173,3 +173,22 @@ stages were checked with exact rational arithmetic. This is a small
 test of the certificate pipeline, not a new computational record
 or a universal proof. Lean checks the general theorems and the
 two examples above, not the completeness of the sample enumeration.
+
+## 2026-11-26 · exact factorization with the first denominator fixed
+
+Fix positive integers `n, x` with `n < 4x`. Put `A = 4x − n`
+and `B = nx`, without reducing the fraction. For positive `y, z`,
+Lean proves the expansion is equivalent to
+`(Ay − B)(Az − B) = B²` in the integers. The hypothesis `A > 0`
+excludes the degenerate case where the factor equation is automatic.
+To use the identity in a search, pick a positive divisor `u` of
+`B²`, set `v = B²/u`, and check that `(u+B)/A` and `(v+B)/A`
+are integers with `x < (u+B)/A < (v+B)/A`. Any expansion
+yields positive factors, since each reciprocal in the remainder
+is strictly less than their sum `A/B`.
+
+The audit now checks four more ordered Type II examples from the
+larger computational run: 3,842,281; 5,410,441; 25,569,769; and
+86,083,321. Their explicit denominators are also checked independently
+against the factor equation in Lean. This does not certify the entire
+search range in Lean or settle the conjecture.
