@@ -59,3 +59,19 @@ example : Residual840 (1129 % 840) := by decide
 example : HasExpansion 1129 := seven_mod_eleven (by decide)
 -- Here b = 308 and c = 3.
 example : (4 / (1129 : ℚ)) = 1 / 308 + 1 / 3387 + 1 / 1043196 := by norm_num
+
+#print axioms salez14b_of_identity
+#print axioms typeII_of_dvd_add_four
+#print axioms conjecture_iff_residual840_after_shifted_divisor
+#print axioms conjecture_iff_residual840_after_salez14b
+
+example : HasExpansion 3049 :=
+  typeII_of_dvd_add_four (q := 43) (by decide) (by decide) (by decide)
+example : (4 / (3049 : ℚ)) = 1 / 780 + 1 / 33539 + 1 / 26160420 := by norm_num
+example : HasSalez14bCertificate 1009 :=
+  ⟨3, 253, 23, 11, 4, by decide, by decide, by decide, by decide,
+    by decide, by decide, by decide⟩
+example : HasExpansion 1009 :=
+  salez14b_of_identity (f := 3) (x := 253) (d := 23) (e := 11) (t := 4)
+    (by decide) (by decide) (by decide) (by decide) (by decide) (by decide) (by decide)
+example : (4 / (1009 : ℚ)) = 1 / 253 + 1 / 92828 + 1 / 1021108 := by norm_num

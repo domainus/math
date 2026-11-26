@@ -564,4 +564,119 @@ theorem conjecture_iff_residual840_after_fixed_typeII :
     · exact lift (nineteen_mod_twenty_three h23)
     exact h p hp hr hd h11 h19 h23
 
+/-- The ordered witness associated to Salez's (14b), with the parameter B = 1.
+The hypotheses are given in multiplication-only form. -/
+theorem salez14b_of_identity {n f x d e t : ℕ}
+    (hf : 3 ≤ f) (hfn : f ≤ n) (hd : 0 < d) (ht : 0 < t)
+    (hfour : 4 * x = n + f) (hx : x = d * e) (he : e + 1 = f * t) :
+    HasExpansion n := by
+  have hn : 0 < n := by omega
+  have hft : f ≤ f * t := by
+    simpa using Nat.mul_le_mul_left f (show 1 ≤ t by omega)
+  have he2 : 2 ≤ e := by omega
+  have hnt : f * t ≤ n * t := Nat.mul_le_mul_right t hfn
+  have hen : e < n * t := by omega
+  let y := n * d * t
+  have hxy : x < y := by
+    rw [hx, show y = d * (n * t) by dsimp [y]; ring]
+    exact Nat.mul_lt_mul_of_pos_left hen hd
+  have hxp : 0 < x := by rw [hx]; exact Nat.mul_pos hd (by omega)
+  have hyp : 0 < y := lt_trans hxp hxy
+  have hyz : y < e * y := by
+    simpa using Nat.mul_lt_mul_of_pos_right (show 1 < e by omega) hyp
+  refine ⟨x, y, e * y, hxp, hxy, hyz, ?_⟩
+  have hN : (n : ℚ) ≠ 0 := by exact_mod_cast hn.ne'
+  have hX : (x : ℚ) ≠ 0 := by exact_mod_cast hxp.ne'
+  have hY : (y : ℚ) ≠ 0 := by exact_mod_cast hyp.ne'
+  have hE : (e : ℚ) ≠ 0 := by exact_mod_cast (show e ≠ 0 by omega)
+  have hfour' : 4 * (x : ℚ) = (n : ℚ) + f := by exact_mod_cast hfour
+  have hx' : (x : ℚ) = (d : ℚ) * e := by exact_mod_cast hx
+  have hy' : (y : ℚ) = (n : ℚ) * d * t := by dsimp [y]; push_cast; rfl
+  have he' : (e : ℚ) + 1 = (f : ℚ) * t := by exact_mod_cast he
+  have ht' : (1 : ℚ) / y + 1 / ((e : ℚ) * y) = (f : ℚ) / ((n : ℚ) * x) := by
+    calc
+      _ = ((e : ℚ) + 1) / ((e : ℚ) * y) := by
+        field_simp [hE, hY]
+      _ = _ := by
+        apply (div_eq_div_iff (mul_ne_zero hE hY) (mul_ne_zero hN hX)).2
+        rw [he',hx',hy']
+        ring
+  push_cast
+  rw [add_assoc, ht']
+  calc
+    (4 : ℚ) / n = ((n : ℚ) + f) / ((n : ℚ) * x) := by
+      apply (div_eq_div_iff hN (mul_ne_zero hN hX)).2
+      rw [← hfour']
+      ring
+    _ = _ := by field_simp [hN, hX]
+
+/-- Variable-divisor form of the Type II criterion with a = d = 1. -/
+theorem typeII_of_dvd_add_four {n q : ℕ} (hq11 : 11 ≤ q)
+    (hq4 : q % 4 = 3) (hdiv : q ∣ n + 4) : HasExpansion n := by
+  obtain ⟨k, hk⟩ := hdiv
+  have hk1 : 1 ≤ k := by
+    by_contra! h
+    have : k = 0 := by omega
+    simp [this] at hk
+  let c := (q + 1) / 4
+  let b := c * k - 1
+  have hc : 3 ≤ c := by dsimp [c]; omega
+  have hc4 : 4 * c = q + 1 := by dsimp [c]; omega
+  have hck : c ≤ c * k := by simpa using Nat.mul_le_mul_left c hk1
+  have hb : 1 < b := by dsimp [b]; omega
+  have hbck : b + 1 = c * k := by dsimp [b]; omega
+  have h : q * b + q = c * n + q + 1 := by
+    calc
+      q * b + q = q * (b + 1) := by ring
+      _ = q * (c * k) := by rw [hbck]
+      _ = c * (q * k) := by ring
+      _ = c * (n + 4) := by rw [← hk]
+      _ = c * n + 4 * c := by ring
+      _ = _ := by rw [hc4, ← Nat.add_assoc]
+  have hb2 : 2 * b ≤ q * b := Nat.mul_le_mul_right b (by omega)
+  have hbn : b < c * n := by omega
+  apply typeII_of_identity (n := n) (a := 1) (b := b) (c := c) (d := 1)
+    (by decide) (by decide) hb hbn
+  calc
+    4 * 1 * b * c * 1 = (4 * c) * b := by ring
+    _ = (q + 1) * b := by rw [hc4]
+    _ = q * b + b := by ring
+    _ = _ := by omega
+
+/-- Reduce the remaining cases by allowing every divisor in the shifted Type II test. -/
+theorem conjecture_iff_residual840_after_shifted_divisor :
+    Conjecture ↔ ∀ p : ℕ, p.Prime → Residual840 (p % 840) →
+      (∀ q : ℕ, q ∣ p + 1 → q % 4 ≠ 3) →
+      (∀ q : ℕ, 11 ≤ q → q ∣ p + 4 → q % 4 ≠ 3) → HasExpansion p := by
+  rw [conjecture_iff_residual840_without_oblath]
+  constructor
+  · intro h p hp hr ho _
+    exact h p hp hr ho
+  · intro h p hp hr ho
+    by_cases hf : ∃ q : ℕ, 11 ≤ q ∧ q ∣ p + 4 ∧ q % 4 = 3
+    · obtain ⟨q, hq, hd, ht⟩ := hf
+      exact typeII_of_dvd_add_four hq ht hd
+    · exact h p hp hr ho (fun q hq hd ht => hf ⟨q, hq, hd, ht⟩)
+
+/-- The hypotheses for the ordered B = 1 certificate in Salez's (14b). -/
+def HasSalez14bCertificate (n : ℕ) : Prop :=
+  ∃ f x d e t : ℕ, 3 ≤ f ∧ f ≤ n ∧ 0 < d ∧ 0 < t ∧
+    4 * x = n + f ∧ x = d * e ∧ e + 1 = f * t
+
+/-- The shifted-divisor and Salez certificates may be applied as successive filters. -/
+theorem conjecture_iff_residual840_after_salez14b :
+    Conjecture ↔ ∀ p : ℕ, p.Prime → Residual840 (p % 840) →
+      (∀ q : ℕ, q ∣ p + 1 → q % 4 ≠ 3) →
+      (∀ q : ℕ, 11 ≤ q → q ∣ p + 4 → q % 4 ≠ 3) →
+      ¬ HasSalez14bCertificate p → HasExpansion p := by
+  rw [conjecture_iff_residual840_after_shifted_divisor]
+  constructor
+  · intro h p hp hr ho hs _
+    exact h p hp hr ho hs
+  · intro h p hp hr ho hs
+    by_cases hc : HasSalez14bCertificate p
+    · obtain ⟨f, x, d, e, t, hf, hfn, hd, ht, hfour, hx, he⟩ := hc
+      exact salez14b_of_identity hf hfn hd ht hfour hx he
+    · exact h p hp hr ho hs hc
+
 end ErdosStraus

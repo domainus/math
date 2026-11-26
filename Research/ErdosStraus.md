@@ -117,3 +117,34 @@ and cross-checking by prime factorization. Among the remaining 1,494,
 319 satisfy at least one of the three new congruences, leaving 1,175
 outside this particular sieve. The counts do not describe primes
 without expansions and are not a proof beyond the stated bound.
+
+## 2026-11-26 · variable shifted divisor and Salez certificates
+
+The fixed Type II rules are special cases of a variable-divisor rule.
+If a divisor `q ≥ 11` of `n + 4` is 3 modulo 4, let
+`c = (q + 1)/4`, `k = (n + 4)/q`, and `b = ck − 1`. Then
+`qb = cn + 1` and `4bc = cn + 1 + b`, with Lean checking the
+strict inequalities required for the ordered Type II witness. The
+first regression example here beyond the fixed rules is 3049, with
+`q = 43` and denominators 780, 33539, and 26160420.
+
+There is also an ordered witness for the `B = 1` case of
+[Salez's (14b)](https://arxiv.org/abs/1406.6307), Proposition 3.
+Given `3 ≤ f ≤ n`, positive `d,t`, and the identities
+`4x = n + f`, `x = de`, and `e + 1 = ft`, take
+`y = ndt` and `z = ey`. Since `nt ≥ ft = e + 1` and `e ≥ 2`,
+the denominators satisfy `0 < x < y < z`. The last two fractions sum
+to `f/(nx)`; adding `1/x` gives `4/n`. At 1009, values
+`f = 3, x = 253, d = 23, e = 11, t = 4` give denominators
+253, 92828, and 1021108. Lean now verifies that the conjecture is
+equivalent to the remaining cases that lack both kinds of certificate
+(and already passed through the modulo-840 and Obláth filters).
+
+**Bounded computation, not a Lean theorem.** Of the 1,494 primes
+remaining below 1,000,000 after Obláth, 863 do not match the
+shifted-divisor rule. Trying Salez successively at `f = 3, 7, 11`
+leaves 524, 349, and 217 respectively. For each fixed `f`, the search
+checks divisor pairs of `x = (p + f)/4` for `e + 1` divisible by
+`f`; every selected witness was checked with exact rational
+arithmetic. This does not exhaust Salez certificates, much less all
+possible expansions. The counts are not counterexamples.
