@@ -48,3 +48,14 @@ example : (4 / (20521 : ℚ)) = 1 / 5296 + 1 / 164168 + 1 / 108679216 := by norm
 example (hp : (20521 : ℕ).Prime) : HasExpansion 20521 :=
   (hasExpansion_iff_positive_of_prime_mod_four hp (by decide)).mpr
     ⟨108679216, 164168, 5296, by decide, by decide, by decide, by norm_num⟩
+
+#print axioms seven_mod_eleven
+#print axioms fifteen_mod_nineteen
+#print axioms nineteen_mod_twenty_three
+#print axioms conjecture_iff_residual840_after_fixed_typeII
+
+example : Residual840 (1129 % 840) := by decide
+-- 1130 = 2 * 5 * 113; none of its divisors is 3 modulo 4.
+example : HasExpansion 1129 := seven_mod_eleven (by decide)
+-- Here b = 308 and c = 3.
+example : (4 / (1129 : ℚ)) = 1 / 308 + 1 / 3387 + 1 / 1043196 := by norm_num

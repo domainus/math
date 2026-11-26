@@ -511,4 +511,57 @@ theorem conjecture_iff_residual840_positive :
   · intro h p hp hr hd
     exact (hasExpansion_iff_positive_of_prime_mod_four hp (hm p hr)).mpr (h p hp hr hd)
 
+/-- A fixed-parameter Type II family, with c = 3 and d = 1. -/
+theorem seven_mod_eleven {n : ℕ}
+    (hn : n % 11 = 7) : HasExpansion n := by
+  let b := 3 * (n / 11) + 2
+  apply typeII_of_identity (n := n) (a := 1) (b := b) (c := 3) (d := 1)
+    (by decide) (by decide)
+  · dsimp [b]; omega
+  · dsimp [b]; omega
+  · dsimp [b]; omega
+
+/-- A fixed-parameter Type II family, with c = 5 and d = 1. -/
+theorem fifteen_mod_nineteen {n : ℕ}
+    (hn : n % 19 = 15) : HasExpansion n := by
+  let b := 5 * (n / 19) + 4
+  apply typeII_of_identity (n := n) (a := 1) (b := b) (c := 5) (d := 1)
+    (by decide) (by decide)
+  · dsimp [b]; omega
+  · dsimp [b]; omega
+  · dsimp [b]; omega
+
+/-- A fixed-parameter Type II family, with c = 6 and d = 1. -/
+theorem nineteen_mod_twenty_three {n : ℕ}
+    (hn : n % 23 = 19) : HasExpansion n := by
+  let b := 6 * (n / 23) + 5
+  apply typeII_of_identity (n := n) (a := 1) (b := b) (c := 6) (d := 1)
+    (by decide) (by decide)
+  · dsimp [b]; omega
+  · dsimp [b]; omega
+  · dsimp [b]; omega
+
+/-- Remove three more congruence families after the Obláth filter. -/
+theorem conjecture_iff_residual840_after_fixed_typeII :
+    Conjecture ↔ ∀ p : ℕ, p.Prime → Residual840 (p % 840) →
+      (∀ q : ℕ, q ∣ p + 1 → q % 4 ≠ 3) →
+      p % 11 ≠ 7 → p % 19 ≠ 15 → p % 23 ≠ 19 → HasPositiveExpansion p := by
+  rw [conjecture_iff_residual840_positive]
+  constructor
+  · intro h p hp hr hd _ _ _
+    exact h p hp hr hd
+  · intro h p hp hr hd
+    have hp4 : p % 4 = 1 := by
+      rw [← Nat.mod_mod_of_dvd p (show 4 ∣ 840 by decide)]
+      generalize p % 840 = r at hr ⊢
+      rcases hr with hh | hh | hh | hh | hh | hh <;> subst r <;> decide
+    have lift := (hasExpansion_iff_positive_of_prime_mod_four hp hp4).mp
+    by_cases h11 : p % 11 = 7
+    · exact lift (seven_mod_eleven h11)
+    by_cases h19 : p % 19 = 15
+    · exact lift (fifteen_mod_nineteen h19)
+    by_cases h23 : p % 23 = 19
+    · exact lift (nineteen_mod_twenty_three h23)
+    exact h p hp hr hd h11 h19 h23
+
 end ErdosStraus

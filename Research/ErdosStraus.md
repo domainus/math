@@ -93,3 +93,27 @@ equivalent reduction that accepts positive certificates directly.
 This bridge does not cover another prime by itself. It removes the need
 to prove strict order separately when importing positive witness formulas
 or computational certificates for these residual primes.
+
+## 2026-11-26 · three fixed-parameter Type II families
+
+Set `a = d = 1` in the existing Type II identity and take
+`c = 3, 5, 6` in turn. For `q = 4c − 1`, put
+`n = qk + q − 4` and `b = ck + c − 1`. These choices give
+`4bc = cn + 1 + b` with `1 < b < cn`, hence ordered denominators
+`b, cn, bcn`. The corresponding sufficient conditions are
+`n ≡ 7 mod 11`, `n ≡ 15 mod 19`, and `n ≡ 19 mod 23`. Lean
+checks these families and the equivalence obtained by excluding them
+after the modulo-840 and Obláth filters. This is a specialization of the
+known Type II parametrization, not a novelty claim.
+
+For instance, the prime 1129 is 289 modulo 840 and has
+`1129 + 1 = 2 · 5 · 113`, with no divisor congruent to 3 modulo 4.
+The modulo-11 rule gives the denominators 308, 3387, and 1043196.
+
+**Bounded computation, not a Lean theorem.** A prime sieve through
+1,000,000 yields 2,370 primes in the six residual classes. Of these, 876
+pass the Obláth test, computed by scanning divisor pairs of `p + 1`
+and cross-checking by prime factorization. Among the remaining 1,494,
+319 satisfy at least one of the three new congruences, leaving 1,175
+outside this particular sieve. The counts do not describe primes
+without expansions and are not a proof beyond the stated bound.
