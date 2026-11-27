@@ -225,3 +225,27 @@ not a guarantee that a divisor exists or a solution to the conjecture.
 The audit exercises cancellation with `n=6`, `x=2`, and the
 remainder `2/12=1/6`, and a nontrivial congruence with `n=13`,
 `x=4`, and the remainder `3/52`.
+
+### Exact test for the second candidate first denominator
+
+For a prime `p` in one of the six residual classes modulo 840, take
+`x = (p + 7) / 4`. An ordered expansion with this particular first
+denominator exists **if and only if** `x` has a prime factor congruent
+to 3, 5, or 6 modulo 7. See
+[`Math/SecondCandidate.lean`](../Math/SecondCandidate.lean).
+
+The remainder is `7/b` with `b = p*x`. Both `p` and `x` lie in the
+nonzero square classes modulo 7. If every prime factor of `x` were a
+square class as well, every divisor of `b²` would be in a square class,
+whereas the divisor test requires residue `-b`, a nonsquare. Conversely
+a prime factor `q` in one of the three nonsquare classes is odd, and `x`
+is even. Write `b = 2*q*t`. For residues 3, 5 and 6 respectively, use the
+divisor pairs `(t, 4*q²*t)`, `(4*t, q²*t)`, and `(2*t, 2*q²*t)`.
+They have product `b²`, the smaller divisor is less than `b`, and its sum
+with `b` is divisible by 7. Since `p > 7`, the remaining order bound is
+automatic.
+
+The audit includes `p = 66721`, `x = 16682`, and `q = 19` (residue 5),
+with the explicit witness `(16682, 175743114, 1669559583)`. The equivalence
+governs only the specified first denominator; failure does not rule out
+other decompositions. It does not solve the conjecture.

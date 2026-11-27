@@ -1,5 +1,6 @@
 import Math.ErdosStraus
 import Math.ReducedRemainder
+import Math.SecondCandidate
 
 open ErdosStraus
 
@@ -153,3 +154,22 @@ example : HasExpansion 13 := by
       hab (by decide) (by decide)).mpr
       ⟨2, by decide, by decide, ⟨1352, by decide⟩, ⟨18, by decide⟩, by decide⟩
   exact ⟨4, y, z, by decide, hy, hz, h⟩
+
+#print axioms fixed_first_seven_of_factor
+#print axioms second_candidate_iff_prime_factor
+#print axioms residual840_second_candidate_iff
+
+-- The residue-five construction applies even though no divisor of x is 6 mod 7.
+example : HasExpansion 66721 := by
+  have hcop : IsCoprime (7 : ℤ) (66721 * 16682) :=
+    ⟨-318011349, 2, by decide⟩
+  obtain ⟨y, z, hy, hz, he⟩ := fixed_first_seven_of_factor
+    (n := 66721) (x := 16682) (q := 19) (t := 29290519)
+    (by decide) (by decide) (by decide) (by decide) (by decide)
+    (by decide) hcop (by decide)
+  exact ⟨16682, y, z, by decide, hy, hz, he⟩
+
+example : (4 / (66721 : ℚ)) = 1/16682 + 1/175743114 + 1/1669559583 :=
+  (fixed_first_iff_factorization
+    (n := 66721) (x := 16682) (y := 175743114) (z := 1669559583)
+    (by decide) (by decide) (by decide) (by decide) (by decide)).mpr (by decide)
