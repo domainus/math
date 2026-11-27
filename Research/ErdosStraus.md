@@ -249,3 +249,19 @@ The audit includes `p = 66721`, `x = 16682`, and `q = 19` (residue 5),
 with the explicit witness `(16682, 175743114, 1669559583)`. The equivalence
 governs only the specified first denominator; failure does not rule out
 other decompositions. It does not solve the conjecture.
+
+### Search a divisor of the reduced denominator, not its square
+
+When the reduced positive remainder is `a/b`, with `a*x < b`,
+the ordered completion is equivalent to positive coprime integers
+`r < s` with `r*s | b` and `a | r+s`. See
+[`Math/SplitDivisor.lean`](../Math/SplitDivisor.lean).
+
+Indeed, start with the smaller divisor `u` of `b²` and let
+`g = gcd(u,b)`, `u = g*r`, `b = g*s`. The equality
+`u*v = b²` and coprimality of `r,s` give `r | g`, so `r*s | b`.
+The congruence `a | u+b = g*(r+s)` simplifies since `a` is coprime
+to `b` and hence to `g`. Conversely, for `b = r*s*t`, take
+`u = r²*t` and `v = s²*t`. The order bound is automatic because
+`u > 0` and `a*x < b`. The audit exercises this rule at the third
+candidate for `p = 559561`. This result does not settle the conjecture.

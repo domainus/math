@@ -1,6 +1,7 @@
 import Math.ErdosStraus
 import Math.ReducedRemainder
 import Math.SecondCandidate
+import Math.SplitDivisor
 
 open ErdosStraus
 
@@ -173,3 +174,20 @@ example : (4 / (66721 : ℚ)) = 1/16682 + 1/175743114 + 1/1669559583 :=
   (fixed_first_iff_factorization
     (n := 66721) (x := 16682) (y := 175743114) (z := 1669559583)
     (by decide) (by decide) (by decide) (by decide) (by decide)).mpr (by decide)
+
+#print axioms reduced_remainder_iff_coprime_split
+#print axioms fixed_first_iff_reduced_coprime_split
+
+-- For the third candidate at n = 559561, a coprime split gives the expansion.
+example : HasExpansion 559561 := by
+  have hc : IsCoprime (11 : ℤ) (559561 * 139893) := by
+    refine ⟨?_, ?_, ?_⟩
+    · exact -7116242452
+    · exact 1
+    · decide
+  obtain ⟨y, z, hy, hz, he⟩ :=
+    (fixed_first_iff_reduced_coprime_split (n := 559561) (x := 139893) (k := 1)
+      (by decide) (by decide) (by decide) (by decide) (by decide) hc
+      (by decide) (by decide) (by decide)).mpr
+      ⟨3, 1534875823, by decide, by decide, ⟨1023250549, -2, by decide⟩, by decide, by decide⟩
+  exact ⟨139893, y, z, by decide, hy, hz, he⟩
