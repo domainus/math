@@ -265,3 +265,20 @@ to `b` and hence to `g`. Conversely, for `b = r*s*t`, take
 `u = r²*t` and `v = s²*t`. The order bound is automatic because
 `u > 0` and `a*x < b`. The audit exercises this rule at the third
 candidate for `p = 559561`. This result does not settle the conjecture.
+
+### Exact test for the fourth candidate first denominator
+
+For a prime `p` in one of the six residual classes modulo 840 and
+`x = (p + 15) / 4`, there is an ordered completion at `x` if and only if
+`x` has a prime factor `q` with residue 7, 11, 13, or 14 modulo 15.
+See [`Math/FourthCandidate.lean`](../Math/FourthCandidate.lean).
+
+Here `x` is even, `p ≡ 1 or 4 (mod 15)`, and `b = p*x ≡ 4 (mod 15)`.
+For the four residues of `q` in the order listed, the coprime split
+`(r,s)` can be `(1,2*q)`, `(1,b/q)`, `(2,q)`, or `(1,q)`.
+Conversely, without such a prime factor of `x`, all prime factors of
+`b` lie in `{1,2,4,8}` modulo 15. This set is closed under multiplication
+and disjoint from its negative, so no divisors `r,s` can sum to zero
+modulo 15. The audit verifies the example
+`4/2689 = 1/676 + 1/139828 + 1/908882`. As with the second candidate,
+the criterion does not apply to other choices of first denominator.

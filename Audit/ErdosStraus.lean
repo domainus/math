@@ -2,6 +2,7 @@ import Math.ErdosStraus
 import Math.ReducedRemainder
 import Math.SecondCandidate
 import Math.SplitDivisor
+import Math.FourthCandidate
 
 open ErdosStraus
 
@@ -191,3 +192,10 @@ example : HasExpansion 559561 := by
       (by decide) (by decide) (by decide)).mpr
       ⟨3, 1534875823, by decide, by decide, ⟨1023250549, -2, by decide⟩, by decide, by decide⟩
   exact ⟨139893, y, z, by decide, hy, hz, he⟩
+
+#print axioms fixed_first_fifteen_iff_prime_factor
+#print axioms residual840_fourth_candidate_iff
+
+example : (4 / (2689 : ℚ)) = 1/676 + 1/139828 + 1/908882 :=
+  (fixed_first_iff_factorization (n := 2689) (x := 676) (y := 139828) (z := 908882)
+    (by decide) (by decide) (by decide) (by decide) (by decide)).mpr (by decide)
